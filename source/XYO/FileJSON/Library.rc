@@ -1,0 +1,11 @@
+// File JSON
+// Copyright (c) 2022 Grigore Stefan <g_stefan@yahoo.com>
+// MIT License (MIT) <http://opensource.org/licenses/MIT>
+// SPDX-FileCopyrightText: 2022 Grigore Stefan <g_stefan@yahoo.com>
+// SPDX-License-Identifier: MIT
+
+#include <XYO/FileJSON/Library.rh>
+#include <XYO/FileJSON/Copyright.rh>
+#include <XYO/FileJSON/Version.rh>
+
+XYO_APPLICATION_VERSION_INFO(XYO_FILEJSON,"file-json.dll","XYO File JSON")
