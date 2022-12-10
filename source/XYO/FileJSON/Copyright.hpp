@@ -17,7 +17,6 @@ namespace XYO::FileJSON::Copyright {
 	XYO_FILEJSON_EXPORT const char *publisher();
 	XYO_FILEJSON_EXPORT const char *company();
 	XYO_FILEJSON_EXPORT const char *contact();
-	XYO_FILEJSON_EXPORT const char *fullCopyright();
 
 };
 

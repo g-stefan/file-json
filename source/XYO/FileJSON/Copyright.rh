@@ -7,10 +7,9 @@
 #ifndef XYO_FILEJSON_COPYRIGHT_RH
 #define XYO_FILEJSON_COPYRIGHT_RH
 
-#define XYO_FILEJSON_COPYRIGHT "Copyright (c) 2022 Grigore Stefan"
+#define XYO_FILEJSON_COPYRIGHT "Copyright (c) 2022 Grigore Stefan <g_stefan@yahoo.com>"
 #define XYO_FILEJSON_PUBLISHER "Grigore Stefan"
 #define XYO_FILEJSON_COMPANY XYO_FILEJSON_PUBLISHER
 #define XYO_FILEJSON_CONTACT "g_stefan@yahoo.com"
-#define XYO_FILEJSON_FULL_COPYRIGHT XYO_FILEJSON_COPYRIGHT " <" XYO_FILEJSON_CONTACT ">"
 
 #endif

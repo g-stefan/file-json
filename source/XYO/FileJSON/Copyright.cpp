@@ -13,7 +13,6 @@ namespace XYO::FileJSON::Copyright {
 	static const char *publisher_ = XYO_FILEJSON_PUBLISHER;
 	static const char *company_ = XYO_FILEJSON_COMPANY;
 	static const char *contact_ = XYO_FILEJSON_CONTACT;
-	static const char *fullCopyright_ = XYO_FILEJSON_FULL_COPYRIGHT;
 
 	const char *copyright() {
 		return copyright_;
@@ -29,10 +28,6 @@ namespace XYO::FileJSON::Copyright {
 
 	const char *contact() {
 		return contact_;
-	};
-
-	const char *fullCopyright() {
-		return fullCopyright_;
 	};
 
 };
