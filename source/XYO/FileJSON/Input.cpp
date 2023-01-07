@@ -10,7 +10,7 @@ namespace XYO::FileJSON {
 
 	Input::Input(size_t stackSize_) {
 		if (stackSize_ == 0) {
-			stackSize_ = 16384;
+			stackSize_ = 32768;
 		};
 
 		iRead = nullptr;

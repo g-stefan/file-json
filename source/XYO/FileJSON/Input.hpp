@@ -26,7 +26,7 @@ namespace XYO::FileJSON {
 
 			size_t fileIndex;
 
-			Input(size_t stackSize_ = 16384);
+			Input(size_t stackSize_ = 32768);
 			~Input();
 
 			inline operator char() {
