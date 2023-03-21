@@ -13,8 +13,8 @@
 
 namespace XYO::FileJSON::License {
 
-	XYO_FILEJSON_EXPORT const char *license();
-	XYO_FILEJSON_EXPORT const char *shortLicense();
+	XYO_FILEJSON_EXPORT std::string license();
+	XYO_FILEJSON_EXPORT std::string shortLicense();
 
 };
 
