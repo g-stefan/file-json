@@ -82,7 +82,7 @@ namespace XYO::FileJSON {
 			if (!writeIndentationBegin(level + 1)) {
 				return false;
 			};
-			if (!write(String::encodeC(vAssociativeArray->value->arrayKey->index(index)))) {
+			if (!write(StringX::encodeC(vAssociativeArray->value->arrayKey->index(index)))) {
 				continue;
 			};
 			if (!write(":")) {
@@ -153,7 +153,7 @@ namespace XYO::FileJSON {
 	};
 
 	bool Writer::writeString(VString *vString) {
-		return write(String::encodeC(vString->value));
+		return write(StringX::encodeC(vString->value));
 	};
 
 	bool Writer::writeNumber(VNumber *vNumber) {

@@ -13,10 +13,10 @@
 
 namespace XYO::FileJSON::Copyright {
 
-	XYO_FILEJSON_EXPORT std::string copyright();
-	XYO_FILEJSON_EXPORT std::string publisher();
-	XYO_FILEJSON_EXPORT std::string company();
-	XYO_FILEJSON_EXPORT std::string contact();
+	XYO_FILEJSON_EXPORT const char *copyright();
+	XYO_FILEJSON_EXPORT const char *publisher();
+	XYO_FILEJSON_EXPORT const char *company();
+	XYO_FILEJSON_EXPORT const char *contact();
 
 };
 
