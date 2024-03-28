@@ -25,7 +25,7 @@ namespace XYO::FileJSON {
 	typedef bool BooleanT;
 
 	class VBoolean : public Value {
-			XYO_DISALLOW_COPY_ASSIGN_MOVE(VBoolean);
+			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(VBoolean);
 			XYO_DYNAMIC_TYPE_DEFINE(XYO_FILEJSON_EXPORT, VBoolean);
 
 		public:

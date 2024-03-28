@@ -25,7 +25,7 @@ namespace XYO::FileJSON {
 	typedef TAssociativeArray<String, TPointerX<Value>, 4, TMemoryPoolActive> AssociativeArrayT;
 
 	class VAssociativeArray : public Value {
-			XYO_DISALLOW_COPY_ASSIGN_MOVE(VAssociativeArray);
+			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(VAssociativeArray);
 			XYO_DYNAMIC_TYPE_DEFINE(XYO_FILEJSON_EXPORT, VAssociativeArray);
 
 		public:

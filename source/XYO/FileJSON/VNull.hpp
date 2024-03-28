@@ -23,7 +23,7 @@ namespace XYO::ManagedMemory {
 namespace XYO::FileJSON {
 
 	class VNull : public Value {
-			XYO_DISALLOW_COPY_ASSIGN_MOVE(VNull);
+			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(VNull);
 			XYO_DYNAMIC_TYPE_DEFINE(XYO_FILEJSON_EXPORT, VNull);
 
 		public:

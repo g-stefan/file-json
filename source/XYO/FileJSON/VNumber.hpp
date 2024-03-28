@@ -25,7 +25,7 @@ namespace XYO::FileJSON {
 	typedef double NumberT;
 
 	class VNumber : public Value {
-			XYO_DISALLOW_COPY_ASSIGN_MOVE(VNumber);
+			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(VNumber);
 			XYO_DYNAMIC_TYPE_DEFINE(XYO_FILEJSON_EXPORT, VNumber);
 
 		public:

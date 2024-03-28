@@ -26,7 +26,7 @@ namespace XYO::FileJSON {
 	typedef TDynamicArray<TPointerX<Value>, 4, TMemoryPoolActive> ArrayT;
 
 	class VArray : public Value {
-			XYO_DISALLOW_COPY_ASSIGN_MOVE(VArray);
+			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(VArray);
 			XYO_DYNAMIC_TYPE_DEFINE(XYO_FILEJSON_EXPORT, VArray);
 
 		public:

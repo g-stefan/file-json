@@ -25,7 +25,7 @@ namespace XYO::ManagedMemory {
 namespace XYO::FileJSON {
 
 	class Value : public DynamicObject {
-			XYO_DISALLOW_COPY_ASSIGN_MOVE(Value);
+			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(Value);
 			XYO_DYNAMIC_TYPE_DEFINE(XYO_FILEJSON_EXPORT, Value);
 
 		public:

@@ -26,7 +26,7 @@ namespace XYO::FileJSON {
 	typedef String StringT;
 
 	class VString : public Value {
-			XYO_DISALLOW_COPY_ASSIGN_MOVE(VString);
+			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(VString);
 			XYO_DYNAMIC_TYPE_DEFINE(XYO_FILEJSON_EXPORT, VString);
 
 		public:

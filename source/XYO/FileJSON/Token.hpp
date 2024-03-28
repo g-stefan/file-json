@@ -14,7 +14,7 @@
 namespace XYO::FileJSON {
 
 	class Token {
-			XYO_DISALLOW_COPY_ASSIGN_MOVE(Token);
+			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(Token);
 
 		public:
 			Input input;
