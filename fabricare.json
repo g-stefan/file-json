@@ -13,6 +13,21 @@
 				]
 			},
 			{
+				"name": "file-json.static",
+				"make": "lib",
+				"category": "make",
+				"SPDX-License-Identifier": "MIT",
+				"sourcePath" : "XYO/FileJSON",
+				"dependency" : [
+					"xyo-system.static"
+				],
+				"dependencyDefines" : [
+					"XYO_FILEJSON_LIBRARY"
+				],
+				"linkVersion": "file-json",
+				"crt": "static"
+			},
+			{
 				"name" : "test.01",
 				"make" : "exe",
 				"category" : "test",
