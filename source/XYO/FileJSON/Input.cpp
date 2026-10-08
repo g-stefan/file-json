@@ -8,72 +8,39 @@
 
 namespace XYO::FileJSON {
 
-	Input::Input(size_t stackSize_) {
-		if (stackSize_ == 0) {
-			stackSize_ = 32768;
-		};
-
+	Input::Input() {
 		iRead = nullptr;
-		stackSize = stackSize_;
-		stackIndex = 0;
+		bufferIndex = 0;
+		bufferLength = 0;
 		input = 0;
 		eof = false;
-		inputStack = new char[stackSize]();
 		fileIndex = 0;
-	};
-
-	Input::~Input() {
-		delete[] inputStack;
 	};
 
 	void Input::setIRead(IRead *value) {
 		iRead = value;
+		bufferIndex = 0;
+		bufferLength = 0;
+		input = 0;
+		eof = false;
+		fileIndex = 0;
 	};
 
-	bool Input::push() {
-		if (stackIndex == stackSize) {
+	bool Input::fill() {
+		input = 0;
+		if (eof || (iRead == nullptr)) {
+			eof = true;
 			return false;
 		};
-		inputStack[stackIndex] = input;
-		++stackIndex;
-
-		--fileIndex;
-		return true;
-	};
-
-	bool Input::pop() {
-		if (stackIndex == 0) {
+		bufferIndex = 0;
+		bufferLength = iRead->read(buffer, bufferSize);
+		if (bufferLength == 0) {
+			eof = true;
 			return false;
 		};
-		--stackIndex;
-		input = inputStack[stackIndex];
-
+		input = buffer[bufferIndex++];
 		++fileIndex;
 		return true;
-	};
-
-	bool Input::read() {
-		if (stackIndex) {
-			return pop();
-		};
-		if (eof) {
-			input = 0;
-			return false;
-		};
-		if (iRead->read(&input, 1)) {
-			++fileIndex;
-			return true;
-		};
-		input = 0;
-		eof = true;
-		return false;
-	};
-
-	bool Input::isEof() {
-		if (stackIndex) {
-			return false;
-		};
-		return eof;
 	};
 
 };

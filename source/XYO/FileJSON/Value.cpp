@@ -12,6 +12,8 @@ namespace XYO::FileJSON {
 
 	Value::Value() {
 		XYO_DYNAMIC_TYPE_PUSH(Value);
+
+		valueType_ = ValueType::Unknown;
 	};
 
 };

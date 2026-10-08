@@ -13,41 +13,52 @@
 
 namespace XYO::FileJSON {
 
+	// Buffered single character lookahead over an IRead,
+	// the IRead is not owned and must outlive the Input
 	class Input {
 			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(Input);
 
+		protected:
+			static constexpr size_t bufferSize = 4096;
+			char buffer[bufferSize];
+			size_t bufferIndex;
+			size_t bufferLength;
+
+			XYO_FILEJSON_EXPORT bool fill();
+
 		public:
-			TPointer<IRead> iRead;
-			char *inputStack;
-			size_t stackSize;
-			size_t stackIndex;
+			IRead *iRead;
 			char input;
 			bool eof;
 
+			// count of characters read
 			size_t fileIndex;
 
-			Input(size_t stackSize_ = 32768);
-			~Input();
+			XYO_FILEJSON_EXPORT Input();
 
-			inline operator char() {
+			inline operator char() const {
 				return input;
 			};
 
-			inline char value() {
+			inline char value() const {
 				return input;
 			};
 
-			inline Input &operator=(char value) {
-				input = value;
-				return *this;
+			XYO_FILEJSON_EXPORT void setIRead(IRead *value);
+
+			// advance to the next character, at end of input sets eof and input to 0
+			inline bool read() {
+				if (bufferIndex < bufferLength) {
+					input = buffer[bufferIndex++];
+					++fileIndex;
+					return true;
+				};
+				return fill();
 			};
 
-			void setIRead(IRead *value);
-
-			bool push();
-			bool pop();
-			bool read();
-			bool isEof();
+			inline bool isEof() const {
+				return eof;
+			};
 	};
 
 };

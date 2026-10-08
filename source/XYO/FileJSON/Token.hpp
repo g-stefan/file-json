@@ -13,6 +13,10 @@
 
 namespace XYO::FileJSON {
 
+	// JSON lexer (RFC 8259), works on the current character of input.
+	// The is* functions return false without consuming anything when the
+	// current character can not start the token, once a token is started
+	// a false result means invalid input and the characters are consumed.
 	class Token {
 			XYO_PLATFORM_DISALLOW_COPY_ASSIGN_MOVE(Token);
 
@@ -33,14 +37,15 @@ namespace XYO::FileJSON {
 			XYO_FILEJSON_EXPORT bool isString(String &token);
 			XYO_FILEJSON_EXPORT bool isNumber(String &token);
 
-			inline bool is(const char inputChar) {
-				// printf("%02X=%02X(%c,%c)",(char)input,inputChar,(char)input,inputChar);
-				return (((char)input) == inputChar);
+			inline bool is(const char inputChar) const {
+				return (input.input == inputChar);
 			};
 
+			// match and consume one character
 			inline bool is1(const char inputChar) {
 				if (is(inputChar)) {
-					return input.read();
+					input.read();
+					return true;
 				};
 				return false;
 			};
@@ -51,12 +56,12 @@ namespace XYO::FileJSON {
 				return input.read();
 			};
 
-			inline bool isEof() {
+			inline bool isEof() const {
 				return input.isEof();
 			};
 
-			inline bool between(const char inputChar_A, const char inputChar_B) {
-				return ((input >= inputChar_A) && (input <= inputChar_B));
+			inline bool between(const char inputChar_A, const char inputChar_B) const {
+				return ((input.input >= inputChar_A) && (input.input <= inputChar_B));
 			};
 	};
 

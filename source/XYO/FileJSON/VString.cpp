@@ -12,6 +12,8 @@ namespace XYO::FileJSON {
 
 	VString::VString() {
 		XYO_DYNAMIC_TYPE_PUSH(VString);
+
+		valueType_ = ValueType::String;
 	};
 
 	String VString::toString() {

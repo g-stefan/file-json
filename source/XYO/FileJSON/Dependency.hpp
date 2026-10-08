@@ -7,6 +7,16 @@
 #ifndef XYO_FILEJSON_DEPENDENCY_HPP
 #define XYO_FILEJSON_DEPENDENCY_HPP
 
+// C++17 is required (nested namespaces, <charconv>),
+// MSVC reports the standard in _MSVC_LANG, __cplusplus stays 199711L without /Zc:__cplusplus
+#if defined(_MSVC_LANG)
+#	if _MSVC_LANG < 201703L
+#		error "File JSON requires C++17 or newer"
+#	endif
+#elif __cplusplus < 201703L
+#	error "File JSON requires C++17 or newer"
+#endif
+
 #ifndef XYO_SYSTEM_HPP
 #	include <XYO/System.hpp>
 #endif
@@ -30,6 +40,12 @@
 #endif
 
 // --
+
+// Maximum nesting of arrays/objects accepted by the reader and writer,
+// guards against stack overflow on hostile input or cyclic documents
+#ifndef XYO_FILEJSON_MAX_DEPTH
+#	define XYO_FILEJSON_MAX_DEPTH 256
+#endif
 
 namespace XYO::FileJSON {
 	using namespace XYO::ManagedMemory;

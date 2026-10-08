@@ -40,6 +40,13 @@ namespace XYO::FileJSON {
 			XYO_FILEJSON_EXPORT String toString();
 			XYO_FILEJSON_EXPORT static TPointer<VNumber> fromNumber(NumberT value);
 			XYO_FILEJSON_EXPORT static TPointer<VNumber> fromString(const String &value);
+
+			// Shortest text that reads back to the same finite value, locale independent,
+			// buffer must hold at least NumberBufferSize chars, returns length (0 if not finite)
+			static constexpr size_t NumberBufferSize = 64;
+			XYO_FILEJSON_EXPORT static size_t toChars(NumberT value, char *buffer);
+			// Parse a JSON number (locale independent), false if the text is not fully consumed
+			XYO_FILEJSON_EXPORT static bool fromChars(const char *text, size_t length, NumberT &value);
 	};
 
 };

@@ -22,6 +22,7 @@
 namespace XYO::FileJSON {
 
 	XYO_FILEJSON_EXPORT bool save(const char *fileName, Value *document, Mode mode = Mode::IndentationTab);
+	// replaces output on success, leaves it unchanged on error
 	XYO_FILEJSON_EXPORT bool saveToString(String &output, Value *document, Mode mode = Mode::IndentationTab);
 
 };

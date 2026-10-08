@@ -2,221 +2,252 @@
 // Copyright (c) 2020-2026 Grigore Stefan <g_stefan@yahoo.com>
 // MIT License (MIT) <http://opensource.org/licenses/MIT>
 // SPDX-FileCopyrightText: 2020-2026 Grigore Stefan <g_stefan@yahoo.com>
-// SPDX-License-Identifier: MITisN
+// SPDX-License-Identifier: MIT
 
 #include <XYO/FileJSON/Token.hpp>
 
 namespace XYO::FileJSON {
 
-	Token::Token(){};
+	// Collects characters in chunks, to avoid growing the string one character at a time
+	struct TokenBuffer {
+			String &token;
+			char chunk[256];
+			size_t length;
 
-	Token::~Token(){};
+			inline TokenBuffer(String &token_) : token(token_), length(0) {};
+
+			inline void flush() {
+				if (length) {
+					token.concatenate(chunk, length);
+					length = 0;
+				};
+			};
+
+			inline void add(char value) {
+				if (length == sizeof(chunk)) {
+					flush();
+				};
+				chunk[length++] = value;
+			};
+
+			inline void addUTF8(uint32_t code) {
+				if (code < 0x80) {
+					add(static_cast<char>(code));
+					return;
+				};
+				if (code < 0x800) {
+					add(static_cast<char>(0xC0 | (code >> 6)));
+					add(static_cast<char>(0x80 | (code & 0x3F)));
+					return;
+				};
+				if (code < 0x10000) {
+					add(static_cast<char>(0xE0 | (code >> 12)));
+					add(static_cast<char>(0x80 | ((code >> 6) & 0x3F)));
+					add(static_cast<char>(0x80 | (code & 0x3F)));
+					return;
+				};
+				add(static_cast<char>(0xF0 | (code >> 18)));
+				add(static_cast<char>(0x80 | ((code >> 12) & 0x3F)));
+				add(static_cast<char>(0x80 | ((code >> 6) & 0x3F)));
+				add(static_cast<char>(0x80 | (code & 0x3F)));
+			};
+	};
+
+	// Reads the 4 hex digits of a \uXXXX escape
+	static bool readHex4(Input &input, uint32_t &value) {
+		value = 0;
+		for (int k = 0; k < 4; ++k) {
+			if (!input.read()) {
+				return false;
+			};
+			char digit = input.input;
+			uint32_t x;
+			if ((digit >= '0') && (digit <= '9')) {
+				x = digit - '0';
+			} else if ((digit >= 'a') && (digit <= 'f')) {
+				x = digit - 'a' + 10;
+			} else if ((digit >= 'A') && (digit <= 'F')) {
+				x = digit - 'A' + 10;
+			} else {
+				return false;
+			};
+			value = (value << 4) | x;
+		};
+		return true;
+	};
+
+	Token::Token() {};
+
+	Token::~Token() {};
 
 	void Token::activeDestructor() {
 		input.setIRead(nullptr);
 	};
 
 	bool Token::isN(const char *name) {
-		int k;
-		for (k = 0; name[k] != 0; ++k) {
-			if (input == name[k]) {
-				if (input.read()) {
-					continue;
-				};
+		for (int k = 0; name[k] != 0; ++k) {
+			if (!is(name[k])) {
+				return false;
 			};
-			break;
+			input.read();
 		};
-		if (name[k] == 0) {
-			return true;
-		};
-		for (--k; k >= 0; --k) {
-			input.push();
-			input = name[k];
-		};
-		return false;
+		return true;
 	};
 
 	bool Token::isBOM() {
-		if (isN("\xEF\xBB\xBF")) {
-			return true;
-		};
-		return false;
+		return isN("\xEF\xBB\xBF");
 	};
 
 	bool Token::isSpace() {
 		bool isOk = false;
-		while (!isEof()) {
-
-			if (is1('\x20')) {
-				isOk = true;
-				continue;
-			};
-
-			if (is1('\x09')) {
-				isOk = true;
-				continue;
-			};
-
-			if (is1('\x0D')) {
-				isOk = true;
-				continue;
-			};
-
-			if (is1('\x0A')) {
-				isOk = true;
-				continue;
-			};
-
-			return isOk;
+		while (is('\x20') || is('\x09') || is('\x0D') || is('\x0A')) {
+			isOk = true;
+			input.read();
 		};
-		return false;
+		return isOk;
 	};
 
 	void Token::ignoreSpace() {
-		while (isBOM() || isSpace()) {
-		};
+		isSpace();
 	};
 
 	bool Token::isString(String &token) {
-		if (is('\"')) {
-			token.empty();
-			while (input.read()) {
-				if (input != '\"') {
-					if (is('\\')) {
-						if (input.read()) {
-							if (is('\"')) {
-								token << '\"';
-								continue;
-							};
-							if (is('\\')) {
-								token << '\\';
-								continue;
-							};
-							if (is('/')) {
-								token << '/';
-								continue;
-							};
-							if (is('b')) {
-								token << '\x08';
-								continue;
-							};
-							if (is('f')) {
-								token << '\x0C';
-								continue;
-							};
-							if (is('n')) {
-								token << '\x0A';
-								continue;
-							};
-							if (is('r')) {
-								token << '\x0D';
-								continue;
-							};
-							if (is('t')) {
-								token << '\x09';
-								continue;
-							};
-							if (is('u')) {
-								char code[5];
-								String codeScan;
-								unsigned int code4;
-								if (!input.read()) {
-									return false;
-								};
-								code[0] = input;
-								if (!input.read()) {
-									return false;
-								};
-								code[1] = input;
-								if (!input.read()) {
-									return false;
-								};
-								code[2] = input;
-								if (!input.read()) {
-									return false;
-								};
-								code[3] = input;
-								code[4] = 0;
-								if (sscanf(code, "%04X", &code4) != 1) {
-									return false;
-								};
-								code[0] = (code4 >> 8) & 0xFF;
-								code[1] = (code4)&0xFF;
-								code[2] = 0;
-								token.concatenate(code, 2);
-								continue;
-							};
-							return false;
-						} else {
-							return false;
-						};
-					};
-
-					token << input;
-
-				} else {
-					input.read();
-					ignoreSpace();
-					return true;
-				};
-			};
+		if (!is('\"')) {
+			return false;
 		};
-		return false;
-	};
-
-	bool Token::isNumber(String &token) {
-		if (is('-') || between('0', '9')) {
-			token.empty();
-			token << input;
-			while (input.read()) {
-				if (between('0', '9')) {
-					token << input;
-					continue;
-				};
+		token.empty();
+		TokenBuffer buffer(token);
+		for (;;) {
+			if (!input.read()) {
+				return false;
+			};
+			if (is('\"')) {
 				break;
 			};
-			if (is('.')) {
-				if (input.read()) {
-					if (between('0', '9')) {
-						token << '.';
-						token << input;
-						while (input.read()) {
-							if (between('0', '9')) {
-								token << input;
-								continue;
-							};
-							break;
-						};
-						if (is('e') || is('E')) {
-							token << input;
-							if (input.read()) {
-								if (is('+') || is('-')) {
-									token << input;
-									while (input.read()) {
-										if (between('0', '9')) {
-											token << input;
-											continue;
-										};
-										input.push();
-										break;
-									};
-									return true;
-								};
-								input.push();
-							};
-							return true;
-						};
-						input.push();
-						return true;
-					};
-					input.push();
-					input = '.';
-				};
-				input.push();
+			// control characters must be escaped
+			if (static_cast<unsigned char>(input.input) < 0x20) {
+				return false;
 			};
-			return true;
+			if (!is('\\')) {
+				buffer.add(input.input);
+				continue;
+			};
+			if (!input.read()) {
+				return false;
+			};
+			switch (input.input) {
+			case '\"':
+				buffer.add('\"');
+				break;
+			case '\\':
+				buffer.add('\\');
+				break;
+			case '/':
+				buffer.add('/');
+				break;
+			case 'b':
+				buffer.add('\x08');
+				break;
+			case 'f':
+				buffer.add('\x0C');
+				break;
+			case 'n':
+				buffer.add('\x0A');
+				break;
+			case 'r':
+				buffer.add('\x0D');
+				break;
+			case 't':
+				buffer.add('\x09');
+				break;
+			case 'u': {
+				uint32_t code;
+				if (!readHex4(input, code)) {
+					return false;
+				};
+				if ((code >= 0xD800) && (code <= 0xDBFF)) {
+					// high surrogate, must be followed by a low surrogate
+					uint32_t low;
+					if (!input.read() || !is('\\')) {
+						return false;
+					};
+					if (!input.read() || !is('u')) {
+						return false;
+					};
+					if (!readHex4(input, low)) {
+						return false;
+					};
+					if ((low < 0xDC00) || (low > 0xDFFF)) {
+						return false;
+					};
+					code = 0x10000 + ((code - 0xD800) << 10) + (low - 0xDC00);
+				} else if ((code >= 0xDC00) && (code <= 0xDFFF)) {
+					// lone low surrogate
+					return false;
+				};
+				buffer.addUTF8(code);
+				break;
+			};
+			default:
+				return false;
+			};
 		};
-		return false;
+		buffer.flush();
+		input.read();
+		return true;
+	};
+
+	// -?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?
+	bool Token::isNumber(String &token) {
+		if (!is('-') && !between('0', '9')) {
+			return false;
+		};
+		token.empty();
+		TokenBuffer buffer(token);
+		if (is('-')) {
+			buffer.add('-');
+			input.read();
+		};
+		if (is('0')) {
+			buffer.add('0');
+			input.read();
+			// no leading zeros
+			if (between('0', '9')) {
+				return false;
+			};
+		} else if (between('1', '9')) {
+			do {
+				buffer.add(input.input);
+			} while (input.read() && between('0', '9'));
+		} else {
+			return false;
+		};
+		if (is('.')) {
+			buffer.add('.');
+			input.read();
+			if (!between('0', '9')) {
+				return false;
+			};
+			do {
+				buffer.add(input.input);
+			} while (input.read() && between('0', '9'));
+		};
+		if (is('e') || is('E')) {
+			buffer.add('e');
+			input.read();
+			if (is('+') || is('-')) {
+				buffer.add(input.input);
+				input.read();
+			};
+			if (!between('0', '9')) {
+				return false;
+			};
+			do {
+				buffer.add(input.input);
+			} while (input.read() && between('0', '9'));
+		};
+		buffer.flush();
+		return true;
 	};
 
 };

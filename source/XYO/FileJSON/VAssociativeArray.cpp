@@ -13,6 +13,8 @@ namespace XYO::FileJSON {
 	VAssociativeArray::VAssociativeArray() {
 		XYO_DYNAMIC_TYPE_PUSH(VAssociativeArray);
 
+		valueType_ = ValueType::AssociativeArray;
+
 		value.pointerLink(this);
 		value.newMemory();
 	};

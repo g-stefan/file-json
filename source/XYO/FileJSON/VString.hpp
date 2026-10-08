@@ -39,7 +39,7 @@ namespace XYO::FileJSON {
 			};
 
 			static inline void initMemory() {
-				DynamicObject::initMemory();
+				Value::initMemory();
 				String::initMemory();
 			};
 

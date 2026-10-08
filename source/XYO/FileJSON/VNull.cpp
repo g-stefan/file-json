@@ -12,6 +12,8 @@ namespace XYO::FileJSON {
 
 	VNull::VNull() {
 		XYO_DYNAMIC_TYPE_PUSH(VNull);
+
+		valueType_ = ValueType::Null;
 	};
 
 	String VNull::toString() {

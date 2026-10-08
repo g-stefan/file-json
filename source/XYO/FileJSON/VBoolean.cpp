@@ -13,6 +13,8 @@ namespace XYO::FileJSON {
 	VBoolean::VBoolean() {
 		XYO_DYNAMIC_TYPE_PUSH(VBoolean);
 
+		valueType_ = ValueType::Boolean;
+
 		value = false;
 	};
 

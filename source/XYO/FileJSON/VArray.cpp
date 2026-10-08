@@ -13,6 +13,8 @@ namespace XYO::FileJSON {
 	VArray::VArray() {
 		XYO_DYNAMIC_TYPE_PUSH(VArray);
 
+		valueType_ = ValueType::Array;
+
 		value.pointerLink(this);
 		value.newMemory();
 	};
