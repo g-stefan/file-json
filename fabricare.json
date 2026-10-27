@@ -1,6 +1,5 @@
 {
 	"solution": {
-		"namespace" : "xyo",
 		"name" : "file-json",
 		"type" : "xyo-cpp",
 		"projects": [
